@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <nav class="navbar" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">{{ namaku }} | Wishlist</span>
+            <span class="navbar-brand mb-0 h1">{{ nama }}</span>
+            <button class="btn btn-sm btn-outline-secondary"><a href="{% url 'wishlist:logout' %}">Logout</a></button>
+        </div>
+    </nav>
+
+    <nav class="nav justify-content-center">
+        <table border=1>
+            <tr>
+                <th>Nama Barang</th>
+                <th>Harga Barang</th>
+                <th>Deskripsi</th>
+            </tr>
+            {% comment %} Tambahkan data di bawah baris ini {% endcomment %}
+            {% for barang in list_barang %}
+                <tr>
+                    <th>{{ barang.nama_barang }}</th>
+                    <th>{{ barang.harga_barang }}</th>
+                    <th>{{ barang.deskripsi }}</th>
+                </tr>
+            {% endfor %}
+        </table>
+    </nav>
+
+    <h5 class="text-center">Sesi terakhir login: {{ last_login }}</h5>
+
+    <div class="h-full flex flex-col justify-center items-center">
+        <form action="" method="POST"
+              class="shadow-2xl p-3 bg-red-200 flex flex-col justify-center items-center rounded-xl">
+            {% csrf_token %}
+            <h1 class="mb-4 font-bold font-5xl">ADD NEW WISHLIST</h1>
+            <div class="flex flex-col">
+                <label for="nama_barang" class="mb-2 font-semibold">Nama Barang</label>
+                <input type="text" name="nama_barang" id="nama_barang" placeholder="nama barang"
+                       class="nama_barang w-[25rem] border border-gray-400 p-2 rounded mb-4" required>
+            </div>
+            <div class="flex flex-col">
+                <label for="harga_barang" class="mb-2 font-semibold">Harga Barang</label>
+                <input type="text" name="harga_barang" id="harga_barang" placeholder="harga barang"
+                       class="harga_barang w-[25rem] border border-gray-400 p-2 rounded mb-4" required>
+            </div>
+            <div class="flex flex-col">
+                <label for="deskripsi" class="mb-2 font-semibold">Deskripsi</label>
+                <textarea name="deskripsi" id="deskripsi" cols="50" rows="3" placeholder="deskripsi barang"
+                          class="deskripsi border border-gray-400 p-2 rounded mb-4" required></textarea>
+            </div>
+        </form>
+        <button class="submit-button bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Submit</button>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('.submit-button').click(function () {
+                let nama_Barang = $('.nama_barang').val();
+                let harga_Barang = $('.harga_barang').val();
+                let deskripsi = $('.deskripsi').val();
+                let CSRFtoken = $('input[name="csrfmiddlewaretoken"]').val();
+                $.post('/wishlist/ajax/submit/', {
+                    nama_barang: nama_Barang,
+                    harga_barang: harga_Barang,
+                    deskripsi: deskripsi,
+                    csrfmiddlewaretoken: CSRFtoken,
+                })
+            })
+        })
+    </script>
+
+{% endblock content %}
